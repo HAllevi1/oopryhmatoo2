@@ -29,25 +29,51 @@ public class Peaklass extends Application {
 
     // Üld andmed
     private static final double ALGNE_LAIUS = 900;
-    private static final double ALGNE_KÕRGUS = 650;
+    private static final double ALGNE_KORGUS = 650;
     private int kordisti = 1;
     private int skoor = 0;
 
-    @Override
-    public void start(Stage pealava) {
+    private Stage pealava;
 
+    // Meetodid staatilistele muutujatele ligipääsuks
+    public static double getAlgneLaius() {
+        return ALGNE_LAIUS;
+    }
+
+    public static double getAlgneKorgus() {
+        return ALGNE_KORGUS;
+    }
+
+    @Override
+    public void start(Stage esmaneLava) {
+        this.pealava = esmaneLava;
+        naiteSisselogimisStseeni();
+    }
+
+    public void naiteSisselogimisStseeni() {
+        SisselogimisStseen sisselogimine = new SisselogimisStseen(pealava, this);
+        Scene sisselogimisStseen = sisselogimine.looStseen();
+
+        pealava.setTitle("Delta Clicker - Sisselogimine");
+        pealava.setScene(sisselogimisStseen);
+        if (!pealava.isShowing()) {
+            pealava.show();
+        }
+    }
+
+    public void naiteManguStseeni() {
         // I ÜLD TAUST
         StackPane juurPaan = new StackPane();
         juurPaan.setStyle("-fx-background-color: #adb16b;");
 
         // II SISETAUST (vaja selleks, et elementide suurus muutuks ühtlaselt ekraani suurust muutes)
         Pane mänguAla = new Pane();
-        mänguAla.setPrefSize(ALGNE_LAIUS, ALGNE_KÕRGUS);
+        mänguAla.setPrefSize(ALGNE_LAIUS, ALGNE_KORGUS);
 
         // Taustapilt
         ImageView taustpilt = new ImageView(new Image(getClass().getResource("/pildid/taust.png").toExternalForm()));
         taustpilt.setFitWidth(ALGNE_LAIUS);
-        taustpilt.setFitHeight(ALGNE_KÕRGUS);
+        taustpilt.setFitHeight(ALGNE_KORGUS);
 
         // Klikatav asi
         Rectangle klikatavAsi = new Rectangle(500, 250, Color.SANDYBROWN);
@@ -128,18 +154,33 @@ public class Peaklass extends Application {
         uuendus3.setGraphic(pilt3);
         uuendus3.setOnAction(e -> kontrolliJaRakendaUuendus(uuendus3, 80, 8, skooriLabel));
 
+        // Logi välja nupp
+        Button logiValjaNupp = new Button("Logi välja");
+        logiValjaNupp.setStyle(
+                "-fx-background-color: #f44336;" + // Punane taust
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 10 20;");
+        double nupuLaius = 200;
+        logiValjaNupp.setPrefWidth(nupuLaius);
+        logiValjaNupp.setLayoutX(uuendusTaust.getLayoutX() + (uuendusTaust.getWidth() - nupuLaius) / 2); // Keskele
+        logiValjaNupp.setLayoutY(uuendusTaust.getLayoutY() + uuendusTaust.getHeight() - 50); // All äärde, 50px ülespoole
+
+        logiValjaNupp.setOnAction(e -> naiteSisselogimisStseeni());
+
         // Lisab kõik mänguala sisse
-        mänguAla.getChildren().addAll(taustpilt, uuendusTaust, klikatavAsi, skooriLabel, uuendus1, uuendus2, uuendus3);
+        mänguAla.getChildren().addAll(taustpilt, uuendusTaust, klikatavAsi, skooriLabel, uuendus1, uuendus2, uuendus3, logiValjaNupp);
 
         // Paneb mänguala Group'i sisse ja seob selle suuruse StackPane suurusega,
         // et kogu sisu skaleeruks proportsionaalselt akna suuruse muutmisel.
         Group mänguGroup = new Group(mänguAla);
         mänguGroup.scaleXProperty().bind(juurPaan.widthProperty().divide(ALGNE_LAIUS));
-        mänguGroup.scaleYProperty().bind(juurPaan.heightProperty().divide(ALGNE_KÕRGUS));
+        mänguGroup.scaleYProperty().bind(juurPaan.heightProperty().divide(ALGNE_KORGUS));
 
         juurPaan.getChildren().addAll(mänguGroup);
 
-        Scene stseen = new Scene(juurPaan, ALGNE_LAIUS, ALGNE_KÕRGUS);
+        Scene stseen = new Scene(juurPaan, ALGNE_LAIUS, ALGNE_KORGUS);
         pealava.setTitle("Delta Clicker");
         pealava.setScene(stseen);
         pealava.show();

@@ -1,7 +1,7 @@
 package org.example.oopryhmatoo2;
 
-public class valedKasutajaAndmed extends RuntimeException {
-    public valedKasutajaAndmed(String message) {
+public class ValedKasutajaAndmed extends Exception {
+    public ValedKasutajaAndmed(String message) {
         super(message);
     }
 }

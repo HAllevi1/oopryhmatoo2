@@ -1,5 +1,6 @@
 package org.example.oopryhmatoo2;
 
+import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -9,11 +10,15 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Rotate;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.util.Duration;
+
+import java.io.File;
 
 public class Peaklass extends Application {
 
@@ -25,7 +30,6 @@ public class Peaklass extends Application {
             skooriLabel.setText("Delta-BUCKS: " + skoor);
         }
     }
-
 
     // Üld andmed
     private static final double ALGNE_LAIUS = 900;
@@ -61,6 +65,7 @@ public class Peaklass extends Application {
         }
     }
 
+
     public void naiteManguStseeni() {
         // I ÜLD TAUST
         StackPane juurPaan = new StackPane();
@@ -75,16 +80,6 @@ public class Peaklass extends Application {
         taustpilt.setFitWidth(ALGNE_LAIUS);
         taustpilt.setFitHeight(ALGNE_KORGUS);
 
-        // Klikatav asi
-        Rectangle klikatavAsi = new Rectangle(500, 250, Color.SANDYBROWN);
-        klikatavAsi.setLayoutX(80);
-        klikatavAsi.setLayoutY(170);
-        Image delta = new Image(getClass().getResource("/pildid/delta.png").toExternalForm());
-        klikatavAsi.setFill(new ImagePattern(delta));
-        // Pööramine
-        Rotate pööramine = new Rotate(0, klikatavAsi.getWidth() / 2, klikatavAsi.getHeight() / 2);
-        klikatavAsi.getTransforms().add(pööramine);
-
         // Skoor
         Label skooriLabel = new Label("Delta-BUCKS: 0");
         skooriLabel.setStyle(
@@ -97,14 +92,44 @@ public class Peaklass extends Application {
         skooriLabel.setLayoutX(200);
         skooriLabel.setLayoutY(600);
 
-        // Klikkamine annab skoori + pööramine
+        // Klikatav asi
+        Rectangle klikatavAsi = new Rectangle(500, 250, Color.SANDYBROWN);
+        klikatavAsi.setLayoutX(80);
+        klikatavAsi.setLayoutY(170);
+        Image delta = new Image(getClass().getResource("/pildid/delta.png").toExternalForm());
+        klikatavAsi.setFill(new ImagePattern(delta));
+
+        // Pööramine
+        Rotate pööramine = new Rotate(0, klikatavAsi.getWidth() / 2, klikatavAsi.getHeight() / 2);
+        klikatavAsi.getTransforms().add(pööramine);
+
+        // Klikkamine annab skoori + pöörab + tausta effekt
         klikatavAsi.setOnMouseClicked(e -> {
             skoor += kordisti;
             skooriLabel.setText("Delta-BUCKS: " + skoor);
-            // Arvutab randomiga klikatavaAsja pööramist
+
+            // Arvutab randomiga pööramise
             double pöördeMuutus = Math.random() * 15;
             double pööre = Math.random() < 0.5 ? pöördeMuutus : -pöördeMuutus;
             pööramine.setAngle(pööre);
+
+            // Langev asi
+            Image klikatavTaustPilt = new Image(getClass().getResource("/pildid/klikatavtaust.png").toExternalForm());
+            ImageView efekt = new ImageView(klikatavTaustPilt);
+            efekt.setFitWidth(30);
+            efekt.setFitHeight(30);
+            efekt.setLayoutX(klikatavAsi.getLayoutX() + 250 + Math.random() * 550 - 250);
+            efekt.setLayoutY(klikatavAsi.getLayoutY() - 150);
+
+            ((Pane) klikatavAsi.getParent()).getChildren().add(efekt);
+
+            // Langetamise animatsioon
+            TranslateTransition langetamine = new TranslateTransition(Duration.seconds(3), efekt);
+            langetamine.setByY(550);
+            langetamine.setOnFinished(event -> {
+                ((Pane) klikatavAsi.getParent()).getChildren().remove(efekt);
+            });
+            langetamine.play();
         });
 
 
@@ -117,7 +142,7 @@ public class Peaklass extends Application {
 
         // Uuendused
         // Uuendus 1
-        Button uuendus1 = new Button("Delta II korrus\n 10 Delta-BUCKS(+1)");
+        Button uuendus1 = new Button("Osta II korrus\n 10 Delta-BUCKS(+1)");
         uuendus1.setStyle("-fx-background-color: #cac0bd;");
         uuendus1.setLayoutX(620);
         uuendus1.setLayoutY(30);
@@ -131,7 +156,7 @@ public class Peaklass extends Application {
         uuendus1.setOnAction(e -> kontrolliJaRakendaUuendus(uuendus1, 10, 2, skooriLabel));
 
         // Uuendus 2
-        Button uuendus2 = new Button("Delta II korrus\n 40 Delta-BUCKS(+2)");
+        Button uuendus2 = new Button("Osta III korrus\n 40 Delta-BUCKS(+2)");
         uuendus2.setStyle("-fx-background-color: #cac0bd;");
         uuendus2.setLayoutX(620);
         uuendus2.setLayoutY(115);
@@ -143,7 +168,7 @@ public class Peaklass extends Application {
         uuendus2.setOnAction(e -> kontrolliJaRakendaUuendus(uuendus2, 40, 4, skooriLabel));
 
         // Uuendus 3
-        Button uuendus3 = new Button("Delta II korrus\n 80 Delta-BUCKS(+4)");
+        Button uuendus3 = new Button("Osta IV korrus\n 80 Delta-BUCKS(+4)");
         uuendus3.setStyle("-fx-background-color: #cac0bd;");
         uuendus3.setLayoutX(620);
         uuendus3.setLayoutY(190);
@@ -153,6 +178,30 @@ public class Peaklass extends Application {
         pilt3.setFitHeight(60);
         uuendus3.setGraphic(pilt3);
         uuendus3.setOnAction(e -> kontrolliJaRakendaUuendus(uuendus3, 80, 8, skooriLabel));
+
+        // Uuendus 4
+        Button uuendus4 = new Button("Osta õpilastele pulgakomm\n 180 Delta-BUCKS(+6)");
+        uuendus4.setStyle("-fx-background-color: #cac0bd;");
+        uuendus4.setLayoutX(620);
+        uuendus4.setLayoutY(265);
+        uuendus4.setPrefWidth(260);
+        ImageView pilt4 = new ImageView(new Image(getClass().getResource("/pildid/uuendus4.png").toExternalForm()));
+        pilt4.setFitWidth(60);
+        pilt4.setFitHeight(60);
+        uuendus4.setGraphic(pilt4);
+        uuendus4.setOnAction(e -> kontrolliJaRakendaUuendus(uuendus4, 180, 14, skooriLabel));
+
+        // Uuendus 5
+        Button uuendus5 = new Button("Saa matemaatilisest \nmaailmapildist läbi \n420 Delta-BUCKS(+10)");
+        uuendus5.setStyle("-fx-background-color: #cac0bd;");
+        uuendus5.setLayoutX(620);
+        uuendus5.setLayoutY(340);
+        uuendus5.setPrefWidth(260);
+        ImageView pilt5 = new ImageView(new Image(getClass().getResource("/pildid/uuendus5.png").toExternalForm()));
+        pilt5.setFitWidth(60);
+        pilt5.setFitHeight(60);
+        uuendus5.setGraphic(pilt5);
+        uuendus5.setOnAction(e -> kontrolliJaRakendaUuendus(uuendus5, 420, 24, skooriLabel));
 
         // Logi välja nupp
         Button logiValjaNupp = new Button("Logi välja");
@@ -170,7 +219,7 @@ public class Peaklass extends Application {
         logiValjaNupp.setOnAction(e -> naiteSisselogimisStseeni());
 
         // Lisab kõik mänguala sisse
-        mänguAla.getChildren().addAll(taustpilt, uuendusTaust, klikatavAsi, skooriLabel, uuendus1, uuendus2, uuendus3, logiValjaNupp);
+        mänguAla.getChildren().addAll(taustpilt, uuendusTaust, klikatavAsi, skooriLabel, uuendus1, uuendus2, uuendus3, uuendus4, uuendus5, logiValjaNupp);
 
         // Paneb mänguala Group'i sisse ja seob selle suuruse StackPane suurusega,
         // et kogu sisu skaleeruks proportsionaalselt akna suuruse muutmisel.

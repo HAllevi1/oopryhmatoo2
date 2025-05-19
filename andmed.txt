@@ -1,2 +1,4 @@
 delta
 passw0rd
+auto
+auto

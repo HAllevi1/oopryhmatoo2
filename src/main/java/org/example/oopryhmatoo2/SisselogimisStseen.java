@@ -33,11 +33,11 @@ public class SisselogimisStseen {
     }
 
     public Scene looStseen() {
-        // Main container for background and centering login box
+        // Peamine konteiner tausta ja sisselogimis kasti jaoks
         StackPane juurPaaneel = new StackPane();
 
-        // Background Pane
-        GridPane taustaPaneel = new GridPane(); // Using GridPane to easily apply effect
+        // tausta paneel
+        GridPane taustaPaneel = new GridPane();
         taustaPaneel.setAlignment(Pos.CENTER);
 
         try {
@@ -47,35 +47,35 @@ public class SisselogimisStseen {
                     BackgroundRepeat.NO_REPEAT, 
                     BackgroundRepeat.NO_REPEAT,
                     BackgroundPosition.CENTER,
-                    // cover=true ensures image covers area, zooming if needed
+                    // cover=true, teeb kindlaks, et pilt kataks kogu ala
                     new BackgroundSize(BackgroundSize.AUTO, BackgroundSize.AUTO, false, false, true, false)
             );
             taustaPaneel.setBackground(new Background(backgroundImage));
-        } catch (Exception e) { // Catch broader exception for safety
+        } catch (Exception e) {
             System.err.println("Sisselogimise taustapilti ei leitud või ei saanud laadida! Kasutatakse vaiketausta. Viga: " + e.getMessage());
             taustaPaneel.setStyle("-fx-background-color: #e0e0e0;");
         }
 
-        // Apply blur to the background panel
+        // Lisab taustale udususe
         GaussianBlur blur = new GaussianBlur();
         blur.setRadius(10); // Adjust blurriness, e.g., 5-15
         taustaPaneel.setEffect(blur);
 
-        // VBox for the login form elements to make them stand out
-        VBox sisselogimisAla = new VBox(15); // Spacing between elements
+        // Sisselogimis elmentidele vbox
+        VBox sisselogimisAla = new VBox(15); // reavahe lementidel
         sisselogimisAla.setAlignment(Pos.CENTER);
-        sisselogimisAla.setPadding(new Insets(30)); // Padding inside the box
+        sisselogimisAla.setPadding(new Insets(30));
         sisselogimisAla.setStyle(
-                "-fx-background-color: rgba(255, 255, 255, 0.8);" + // White, 80% transparent
-                "-fx-background-radius: 10;" + // Rounded corners
-                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" // Subtle drop shadow
+                "-fx-background-color: rgba(255, 255, 255, 0.8);" + // 80% läbipaistev valge taust
+                "-fx-background-radius: 10;" + // kaardus nurgad
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);" // väike vari
         );
-        sisselogimisAla.setMaxWidth(350); // Max width for the login box
+        sisselogimisAla.setMaxWidth(350);
 
         Label pealkiri = new Label("Delta Clicker - Sisselogimine");
         pealkiri.setStyle("-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #333333;");
 
-        // GridPane for form fields for better alignment inside VBox
+        // GridPane sisselogimis lahrite jaoks, et oleks vboxiga parem joondus
         GridPane vormiRuudustik = new GridPane();
         vormiRuudustik.setAlignment(Pos.CENTER);
         vormiRuudustik.setHgap(10);
@@ -107,12 +107,12 @@ public class SisselogimisStseen {
         teadeSilt.setTextFill(Color.RED);
         teadeSilt.setStyle("-fx-font-size: 13px; -fx-font-weight: bold;");
 
-        // Add elements to the login area VBox
+        // Lisame elemendid sisselogimisalasse
         sisselogimisAla.getChildren().addAll(pealkiri, vormiRuudustik, logiSisseNupp, teadeSilt);
 
-        // Add background and login area to the root StackPane
+        // lisame tausta ja sisselogimise juurpaneeli
         juurPaaneel.getChildren().addAll(taustaPaneel, sisselogimisAla);
-        StackPane.setAlignment(sisselogimisAla, Pos.CENTER); // Center login box in StackPane
+        StackPane.setAlignment(sisselogimisAla, Pos.CENTER); // sisselogimise kasti asetame keskele
 
         logiSisseNupp.setOnAction(e -> {
             String kasutajanimi = kasutajanimiTekst.getText();

@@ -1,4 +1,6 @@
-delta
-passw0rd
-auto
-auto
+kasutaja
+kasutaja
+parool
+parool
+testikas
+testikas

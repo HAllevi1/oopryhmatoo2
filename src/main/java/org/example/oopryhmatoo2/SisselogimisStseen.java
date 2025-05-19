@@ -20,6 +20,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.io.IOException;
+
 public class SisselogimisStseen {
 
     private AndmeHaldur andmeHaldur;
@@ -103,12 +105,17 @@ public class SisselogimisStseen {
         logiSisseNupp.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 15;");
         logiSisseNupp.setPrefWidth(150);
 
+        // Registreerimis nupp
+        Button registreeriNupp = new Button("Registreeri");
+        registreeriNupp.setStyle("-fx-background-color: #007bff; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 8 15;");
+        registreeriNupp.setPrefWidth(150);
+
         Label teadeSilt = new Label();
         teadeSilt.setTextFill(Color.RED);
         teadeSilt.setStyle("-fx-font-size: 13px; -fx-font-weight: bold;");
 
         // Lisame elemendid sisselogimisalasse
-        sisselogimisAla.getChildren().addAll(pealkiri, vormiRuudustik, logiSisseNupp, teadeSilt);
+        sisselogimisAla.getChildren().addAll(pealkiri, vormiRuudustik, logiSisseNupp, registreeriNupp, teadeSilt);
 
         // lisame tausta ja sisselogimise juurpaneeli
         juurPaaneel.getChildren().addAll(taustaPaneel, sisselogimisAla);
@@ -122,7 +129,37 @@ public class SisselogimisStseen {
                     peaklass.naiteManguStseeni();
                 }
             } catch (ValedKasutajaAndmed ex) {
+                teadeSilt.setTextFill(Color.RED);
                 teadeSilt.setText("Vale kasutajanimi või parool!");
+            }
+        });
+
+        registreeriNupp.setOnAction(e -> {
+            String kasutajanimi = kasutajanimiTekst.getText();
+            String parool = paroolTekst.getText();
+
+            // Lihtne valideerimine, et väljad poleks tühjad
+            if (kasutajanimi.trim().isEmpty() || parool.trim().isEmpty()) {
+                teadeSilt.setTextFill(Color.RED);
+                teadeSilt.setText("Kasutajanimi ja parool ei tohi olla tühjad!");
+                return;
+            }
+
+            try {
+                andmeHaldur.registreeriKasutaja(kasutajanimi, parool);
+                teadeSilt.setTextFill(Color.GREEN); // Muudame teksti värvi roheliseks õnnestumise korral
+                teadeSilt.setText("Kasutaja '" + kasutajanimi + "' edukalt registreeritud! Loggin sisse...");
+                kasutajanimiTekst.clear(); // Tühjendame väljad pärast edukat registreerimist
+                paroolTekst.clear();
+                // Automaatne sisselogimine pärast edukat registreerimist
+                peaklass.naiteManguStseeni(); 
+            } catch (KasutajanimiHoivatudErind ex) {
+                teadeSilt.setTextFill(Color.RED);
+                teadeSilt.setText(ex.getMessage());
+            } catch (IOException ex) {
+                teadeSilt.setTextFill(Color.RED);
+                teadeSilt.setText("Viga andmete salvestamisel. Proovi uuesti.");
+                System.err.println("Faili kirjutamise viga registreerimisel: " + ex.getMessage());
             }
         });
 

@@ -22,12 +22,12 @@ import java.io.File;
 
 public class Peaklass extends Application {
 
-    private void kontrolliJaRakendaUuendus(Button nupp, int hind, int uusKordisti, Label skooriLabel) {
+    private void kontrolliJaRakendaUuendus(Button nupp, int hind, int uusKordisti, Label skooriTekst) {
         if (skoor >= hind && !nupp.isDisabled()) {
             skoor -= hind;
             kordisti = uusKordisti;
             nupp.setDisable(true);
-            skooriLabel.setText("Delta-BUCKS: " + skoor);
+            skooriTekst.setText("Delta-BUCKS: " + skoor);
         }
     }
 
@@ -71,9 +71,8 @@ public class Peaklass extends Application {
         StackPane juurPaan = new StackPane();
         juurPaan.setStyle("-fx-background-color: #adb16b;");
 
-        // II SISETAUST (vaja selleks, et elementide suurus muutuks ühtlaselt ekraani suurust muutes)
+        // II SISETAUST
         Pane mänguAla = new Pane();
-        mänguAla.setPrefSize(ALGNE_LAIUS, ALGNE_KORGUS);
 
         // Taustapilt
         ImageView taustpilt = new ImageView(new Image(getClass().getResource("/pildid/taust.png").toExternalForm()));
@@ -118,6 +117,7 @@ public class Peaklass extends Application {
             ImageView efekt = new ImageView(klikatavTaustPilt);
             efekt.setFitWidth(30);
             efekt.setFitHeight(30);
+            // Arvutab välja, et kust lanev asi kukkub
             efekt.setLayoutX(klikatavAsi.getLayoutX() + 250 + Math.random() * 550 - 250);
             efekt.setLayoutY(klikatavAsi.getLayoutY() - 150);
 
@@ -236,6 +236,13 @@ public class Peaklass extends Application {
     }
 
     public static void main(String[] args) {
+        System.out.println("Teretulemast mängu! Tegu on Delta-clicker mänguga.\n" +
+                "Et edasi liikuda on teil 2 valikut:\n" +
+                "1. sisestada uus kasutajanimi ja parool ning registreerida ennast kasutajaks\n" +
+                "2. sisestada enda kasutajanimi ja parool ning logida sisse\n\n" +
+                "Edasi avaneb teile mängu aken, vasakus aknas saate vajutada Delta maja ning teenida sellega Delta-BUCKSe.\n" +
+                "Delta BUCKSide eest saate paremal aknas osta uuendusi, tänu millele järgmisel korral Delta maja klikkides saate rohkem raha.\n" +
+                "Head mänguelamust! :P");
         launch();
     }
 }
